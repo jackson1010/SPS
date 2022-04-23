@@ -19,15 +19,15 @@ var makeDeck = function () {
 
       // If rank is 1, 11, 12, or 13, set cardName to the ace or face card's name
       if (cardName == 1) {
-        cardName = "ace";
+        cardName = "Α";
       } else if (cardName == 11) {
-        cardName = "jack";
+        cardName = "♘";
         rankCounter = 10;
       } else if (cardName == 12) {
-        cardName = "queen";
+        cardName = "♕";
         rankCounter = 10;
       } else if (cardName == 13) {
-        cardName = "king";
+        cardName = "♔";
         rankCounter = 10;
       }
 
@@ -86,49 +86,134 @@ var printCards = function (cards) {
 
 var countScore = function (cards) {
   var score = 0;
+  var noOfAces = 0;
   for (var i = 0; i < cards.length; i += 1) {
     var currCard2 = cards[i];
-    score += currCard2.rank;
+    if (currCard2.rank == 1) {
+      noOfAces += 1;
+      score += 11;
+    } else {
+      score += currCard2.rank;
+    }
+  }
+  if (score > 21 && noOfAces > 0) {
+    var aces = 0;
+    while (aces < noOfAces) {
+      score -= 10;
+      if (score <= 21) {
+        break;
+      }
+      aces += 1;
+    }
   }
   return score;
 };
 
+var drawCards = function () {
+  comCard.push(shuffledDeck.pop());
+  playerCard.push(shuffledDeck.pop());
+  comCard.push(shuffledDeck.pop());
+  playerCard.push(shuffledDeck.pop());
+  drawncard = true;
+};
+
+var BlackJack = function (whichPlayer) {
+  if (whichPlayer == "player") {
+    return `BLACKJACK!! You win!! 💰💰<br><br> ${playerCardMsg} <br> Your total point is ${playScore} <br><br>Please refresh to play again.`;
+  }
+  if (whichPlayer == "dealer") {
+    return `BLACKJACK!! Dealer win!! 💰💰 <br><br> ${computerCardsMsg} <br> Dealer total point is ${dealerScore} <br><br>Please refresh to play again.`;
+  }
+};
+
+var generatedMsg = function () {
+  return `${computerCardsMsg} <br> Dealer total point is ${dealerScore} <br><br> 
+  ${playerCardMsg} <br> Your total point is ${playScore}`;
+};
+
+var shuffledDeck = shuffleCards(makeDeck());
+var notStand = false;
+var drawncard = false;
+var gameOver = false;
 var comCard = [];
 var playerCard = [];
-var shuffledDeck = shuffleCards(makeDeck());
-var hitOrstand = "";
-var drawncard = false;
-var playerStandardMsg = "";
-var playerStandardMsg2 = "";
+var playerCardMsg = "";
+var computerCardsMsg = "";
 var playScore = 0;
-var comScore = 0;
+var dealerScore = 0;
 
 var main = function (input) {
-  var count = 2;
-
+  if (gameOver) {
+    return "The game is over. Please refresh to play again.";
+  }
   if (drawncard == false) {
-    comCard[0] = shuffledDeck.pop();
-    playerCard[0] = shuffledDeck.pop();
-    comCard[1] = shuffledDeck.pop();
-    playerCard[1] = shuffledDeck.pop();
-    drawncard = true;
-    playerStandardMsg = printCards(playerCard);
+    drawCards();
     playScore = countScore(playerCard);
-    return `You have drawn ${playerStandardMsg} <br> Your total point is ${playScore} <br> Would you like to Hit or Stand?  `;
+    dealerScore = countScore(comCard);
+    playerCardMsg = ` You have drawn ${printCards(playerCard)}`;
+    computerCardsMsg = ` Dealer has drawn ${printCards(comCard)}`;
+
+    if (playScore == 21) {
+      gameOver = true;
+      return BlackJack("player");
+    }
+    if (dealerScore == 21) {
+      gameOver = true;
+      return BlackJack("dealer");
+    }
+    return `${generatedMsg()} <br><br> Would you like to Hit or Stand?`;
   }
 
-  if (hitOrstand !== "stand") {
-    if (input == "") {
-      return `Type Hit or Stand`;
-    }
+  if (!notStand) {
     var choice = input.toLowerCase();
+    if (choice !== "hit" && choice !== "stand") {
+      return `Please enter Hit or Stand`;
+    }
     if (choice == "hit") {
-      playerCard[count] = shuffledDeck.pop();
-      playerStandardMsg2 += `${playerCard[count].name} of ${playerCard[count].suit} `;
-      count += 1;
+      playerCard.push(shuffledDeck.pop());
+      playerCardMsg = `You have drawn ${printCards(playerCard)}`;
       playScore = countScore(playerCard);
-      return `You have drawn ${playerStandardMsg} <br> You hit ${playerStandardMsg2} <br> Your total point is ${playScore} <br>
-        Would you like to Hit or Stand? `;
+
+      if (playScore > 21) {
+        gameOver = true;
+        return `Bust💣!! <br> You lose!!😥 <br><br> ${playerCardMsg} <br>Your total point is ${playScore}<br><br>Please refresh to play again.`;
+      }
+      if (playScore == 21) {
+        gameOver = true;
+        return BlackJack("player");
+      }
+      if (playScore < 21) {
+        return `${generatedMsg()} <br><br> Would you like to Hit or Stand? <br>`;
+      }
+    }
+    if (input.toLowerCase() === "stand") {
+      notStand = true;
     }
   }
+
+  while (dealerScore < 17) {
+    comCard.push(shuffledDeck.pop());
+    dealerScore = countScore(comCard);
+    computerCardsMsg = `Dealer has drawn ${printCards(comCard)}`;
+
+    if (dealerScore == 21) {
+      gameOver = true;
+      return BlackJack("dealer");
+    }
+    if (dealerScore > 21) {
+      gameOver = true;
+      return `Dealer Bust💣!!<br> You Win!! <br><br> ${generatedMsg()} <br><br>Please refresh to play again.`;
+    }
+  }
+
+  if (dealerScore < playScore) {
+    gameOver = true;
+    return `You win!! 💰💰 <br><br> ${generatedMsg()} <br><br>Please refresh to play again.`;
+  }
+  if (dealerScore > playScore) {
+    gameOver = true;
+    return `You lose!! 😥 <br><br> ${generatedMsg()} <br><br>Please refresh to play again.`;
+  }
+  gameOver = true;
+  return `Its a tie!! 😥 <br><br> ${generatedMsg()} <br><br>Please refresh to play again.`;
 };

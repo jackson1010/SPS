@@ -33,13 +33,13 @@ var winner = function () {
     Player 1's number: ${playerNumber[j - 1]} | Player 2's number: ${
       playerNumber[j]
     } <br>
-    Press Submit to play again.`;
+    Press Submit to play again. <br> ${playerDices}`;
   } else
     return `Congragulation🏆 <br> Player 2 Win <br> 
   Player 1's number: ${playerNumber[j - 1]} | Player 2's number: ${
       playerNumber[j]
     } <br>
-  Press Submit to play again.`;
+  Press Submit to play again. <br> ${playerDices}`;
 };
 
 var gameMode = "diceRoll";
@@ -56,17 +56,19 @@ var main = function (input) {
       return `Please choose 1 or 2`;
     }
     var msg2 = choice(choiceIndex);
+
     if (currentPlayer == 1) {
+      j += 1;
+      i += 2;
       gameMode = "diceRoll";
       currentPlayer += 1;
-      i += 1;
-      j += 1;
       return `${msg2} <br>
      It is now Player ${currentPlayer}'s turn.  Press Submit to roll Player ${currentPlayer}'s dice.`;
     }
   }
   currentPlayer = 1;
   gameMode = "diceRoll";
+  i += 2;
   var playerwin = winner();
   return playerwin;
 };
