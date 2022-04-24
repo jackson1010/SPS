@@ -118,10 +118,20 @@ var drawCards = function () {
 
 var BlackJack = function (whichPlayer) {
   if (whichPlayer == "player") {
-    return `BLACKJACK!! You win!! 💰💰<br><br> ${playerCardMsg} <br> Your total point is ${playScore} <br><br>Please refresh to play again.`;
+    myImage =
+      '<iframe src="https://giphy.com/embed/l1IXY77djUsHH6S8o" width="480" height="270" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/Workaholics-comedy-central-workaholics-l1IXY77djUsHH6S8o"></a></p>';
+    return (
+      `BLACKJACK!! You win!! 💰💰<br><br> ${playerCardMsg} <br> Your total point is ${playScore} <br><br>Please refresh to play again. <br><br>` +
+      myImage
+    );
   }
   if (whichPlayer == "dealer") {
-    return `BLACKJACK!! Dealer win!! 💰💰 <br><br> ${computerCardsMsg} <br> Dealer total point is ${dealerScore} <br><br>Please refresh to play again.`;
+    myImage =
+      '<iframe src="https://giphy.com/embed/26ufcZICbgCSGe5sQ" width="480" height="338" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/southparkgifs-26ufcZICbgCSGe5sQ"></a></p>';
+    return (
+      `BLACKJACK!! Dealer win!! 💰💰 <br><br> ${computerCardsMsg} <br> Dealer total point is ${dealerScore} <br><br>Please refresh to play again.<br><br>` +
+      myImage
+    );
   }
 };
 
@@ -176,6 +186,7 @@ var playerCardMsg = "";
 var computerCardsMsg = "";
 var playScore = 0;
 var dealerScore = 0;
+var myImage = "";
 
 var main = function (input) {
   if (gameState == "new Game") {
@@ -188,6 +199,7 @@ var main = function (input) {
     drawCards();
     document.querySelector("#hit-button").disabled = false;
     document.querySelector("#stand-button").disabled = false;
+    document.querySelector("#submit-button").disabled = true;
     playScore = countScore(playerCard);
     dealerScore = countScore(comCard);
     playerCardMsg = ` You have drawn ${printCards(playerCard)}`;
@@ -210,7 +222,12 @@ var main = function (input) {
 
     if (playScore > 21) {
       endGame();
-      return `Bust💣!! <br> You lose!!😥 <br><br> ${playerCardMsg} <br>Your total point is ${playScore}<br><br>Please refresh to play again.`;
+      myImage =
+        '<iframe src="https://giphy.com/embed/X92pmIty2ZJp6" width="480" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/explosion-bomb-mushroom-X92pmIty2ZJp6"></a></p>';
+      return (
+        `Bust💣!! <br> You lose!!😥 <br><br> ${playerCardMsg} <br>Your total point is ${playScore}<br><br>Please refresh to play again. <br><br>` +
+        myImage
+      );
     }
     if (playScore == 21) {
       endGame();
@@ -232,18 +249,40 @@ var main = function (input) {
     }
     if (dealerScore > 21) {
       endGame();
-      return `Dealer Bust💣!!<br> You Win!! <br><br> ${generatedMsg()} <br><br>Please refresh to play again.`;
+      myImage =
+        '<iframe src="https://giphy.com/embed/LdOyjZ7io5Msw" width="480" height="359" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/make-it-rain-get-paid-LdOyjZ7io5Msw"></a></p>';
+      return (
+        `Dealer Bust💣!!<br> You Win!! <br><br> ${generatedMsg()} <br><br>Please refresh to play again.<br><br>` +
+        myImage
+      );
     }
   }
 
   if (dealerScore < playScore) {
     endGame();
-    return `You win!! 💰💰 <br><br> ${generatedMsg()} <br><br>Please refresh to play again.`;
+    myImage =
+      '<iframe src="https://giphy.com/embed/LdOyjZ7io5Msw" width="480" height="359" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/make-it-rain-get-paid-LdOyjZ7io5Msw"></a></p>';
+    return (
+      `You win!! 💰💰 <br><br> ${generatedMsg()} <br><br>Please refresh to play again.<br><br>` +
+      myImage
+    );
   }
   if (dealerScore > playScore) {
     endGame();
-    return `You lose!! 😥 <br><br> ${generatedMsg()} <br><br>Please refresh to play again.`;
+    myImage =
+      '<iframe src="https://giphy.com/embed/1ccd9l2mnpOQz96MZM" width="480" height="384" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/nice-love-you-out-1ccd9l2mnpOQz96MZM"></a></p>';
+    return (
+      `You lose!! 😥 <br><br> ${generatedMsg()} <br><br>Please refresh to play again.<br><br>` +
+      myImage
+    );
   }
-  endGame();
-  return `Its a tie!! 😥 <br><br> ${generatedMsg()} <br><br>Please refresh to play again.`;
+  if (dealerScore == playScore) {
+    endGame();
+    myImage =
+      '<iframe src="https://giphy.com/embed/1ccd9l2mnpOQz96MZM" width="480" height="384" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/nice-love-you-out-1ccd9l2mnpOQz96MZM"></a></p>';
+    return (
+      `Its a tie!! 😥 <br><br> ${generatedMsg()} <br><br>Please refresh to play again.<br><br>` +
+      myImage
+    );
+  }
 };
