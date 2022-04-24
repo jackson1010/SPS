@@ -177,7 +177,7 @@ document.querySelector("#hit-button").disabled = true;
 document.querySelector("#stand-button").disabled = true;
 document.querySelector("#newGame-button").disabled = true;
 
-var gameState = "";
+var gameState = " ";
 var shuffledDeck = shuffleCards(makeDeck());
 var drawncard = false;
 var comCard = [];
