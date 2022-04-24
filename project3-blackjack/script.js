@@ -46,11 +46,10 @@ var makeDeck = function () {
   // Return the completed card deck
   return cardDeck;
 };
-// Get a random index ranging from 0 (inclusive) to max (exclusive).
+
 var getRandomIndex = function (max) {
   return Math.floor(Math.random() * max);
 };
-// Shuffle the elements in the cardDeck array
 var shuffleCards = function (cardDeck) {
   // Loop over the card deck array once
   for (
@@ -131,10 +130,46 @@ var generatedMsg = function () {
   ${playerCardMsg} <br> Your total point is ${playScore}`;
 };
 
+var playerStand = function () {
+  gameState = "player stand";
+  document.querySelector("#hit-button").disabled = true;
+  document.querySelector("#stand-button").disabled = true;
+  document.querySelector("#submit-button").disabled = true;
+};
+
+var playerHit = function (playerCard) {
+  gameState = "player hit";
+  playerCard.push(shuffledDeck.pop());
+};
+
+var newGame = function () {
+  gameState = "";
+  shuffledDeck = shuffleCards(makeDeck());
+  comCard = [];
+  playerCard = [];
+  playerCardMsg = "";
+  computerCardsMsg = "";
+  playScore = 0;
+  dealerScore = 0;
+  gameState = "new Game";
+  document.querySelector("#submit-button").disabled = false;
+  drawncard = true;
+};
+
+var endGame = function () {
+  document.querySelector("#hit-button").disabled = true;
+  document.querySelector("#stand-button").disabled = true;
+  document.querySelector("#submit-button").disabled = true;
+  document.querySelector("#newGame-button").disabled = false;
+};
+
+document.querySelector("#hit-button").disabled = true;
+document.querySelector("#stand-button").disabled = true;
+document.querySelector("#newGame-button").disabled = true;
+
+var gameState = "";
 var shuffledDeck = shuffleCards(makeDeck());
-var notStand = false;
 var drawncard = false;
-var gameOver = false;
 var comCard = [];
 var playerCard = [];
 var playerCardMsg = "";
@@ -143,51 +178,46 @@ var playScore = 0;
 var dealerScore = 0;
 
 var main = function (input) {
-  if (gameOver) {
-    return "The game is over. Please refresh to play again.";
+  if (gameState == "new Game") {
+    drawncard = false;
+    document.querySelector("#newGame-button").disabled = true;
+    gameState = "void";
+    return "May the odds be ever in your favor ";
   }
   if (drawncard == false) {
     drawCards();
+    document.querySelector("#hit-button").disabled = false;
+    document.querySelector("#stand-button").disabled = false;
     playScore = countScore(playerCard);
     dealerScore = countScore(comCard);
     playerCardMsg = ` You have drawn ${printCards(playerCard)}`;
     computerCardsMsg = ` Dealer has drawn ${printCards(comCard)}`;
 
     if (playScore == 21) {
-      gameOver = true;
+      endGame();
       return BlackJack("player");
     }
     if (dealerScore == 21) {
-      gameOver = true;
+      endGame();
       return BlackJack("dealer");
     }
     return `${generatedMsg()} <br><br> Would you like to Hit or Stand?`;
   }
 
-  if (!notStand) {
-    var choice = input.toLowerCase();
-    if (choice !== "hit" && choice !== "stand") {
-      return `Please enter Hit or Stand`;
-    }
-    if (choice == "hit") {
-      playerCard.push(shuffledDeck.pop());
-      playerCardMsg = `You have drawn ${printCards(playerCard)}`;
-      playScore = countScore(playerCard);
+  if (gameState == "player hit") {
+    playerCardMsg = `You have drawn ${printCards(playerCard)}`;
+    playScore = countScore(playerCard);
 
-      if (playScore > 21) {
-        gameOver = true;
-        return `Bust💣!! <br> You lose!!😥 <br><br> ${playerCardMsg} <br>Your total point is ${playScore}<br><br>Please refresh to play again.`;
-      }
-      if (playScore == 21) {
-        gameOver = true;
-        return BlackJack("player");
-      }
-      if (playScore < 21) {
-        return `${generatedMsg()} <br><br> Would you like to Hit or Stand? <br>`;
-      }
+    if (playScore > 21) {
+      endGame();
+      return `Bust💣!! <br> You lose!!😥 <br><br> ${playerCardMsg} <br>Your total point is ${playScore}<br><br>Please refresh to play again.`;
     }
-    if (input.toLowerCase() === "stand") {
-      notStand = true;
+    if (playScore == 21) {
+      endGame();
+      return BlackJack("player");
+    }
+    if (playScore < 21) {
+      return `${generatedMsg()} <br><br> Would you like to Hit or Stand? <br>`;
     }
   }
 
@@ -197,23 +227,23 @@ var main = function (input) {
     computerCardsMsg = `Dealer has drawn ${printCards(comCard)}`;
 
     if (dealerScore == 21) {
-      gameOver = true;
+      endGame();
       return BlackJack("dealer");
     }
     if (dealerScore > 21) {
-      gameOver = true;
+      endGame();
       return `Dealer Bust💣!!<br> You Win!! <br><br> ${generatedMsg()} <br><br>Please refresh to play again.`;
     }
   }
 
   if (dealerScore < playScore) {
-    gameOver = true;
+    endGame();
     return `You win!! 💰💰 <br><br> ${generatedMsg()} <br><br>Please refresh to play again.`;
   }
   if (dealerScore > playScore) {
-    gameOver = true;
+    endGame();
     return `You lose!! 😥 <br><br> ${generatedMsg()} <br><br>Please refresh to play again.`;
   }
-  gameOver = true;
+  endGame();
   return `Its a tie!! 😥 <br><br> ${generatedMsg()} <br><br>Please refresh to play again.`;
 };

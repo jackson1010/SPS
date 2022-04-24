@@ -329,6 +329,13 @@ The <html> element is known as the root element of a HTML page. All other elemen
         input.value = "";
       });
 
+      var newButton = document.createElement("button");
+      newButton.innerText = "Hello";
+      newButton.addEventListener("click", function () {
+        console.log("hello, world!");
+      });
+
+      document.body.appendChild(newButton);
       clockButton.addEventListener("click", function () {
         // Set result to input value
         var input = document.querySelector("#clock-input-field");

@@ -90,22 +90,14 @@ The <html> element is known as the root element of a HTML page. All other elemen
     <!-- Define button click functionality -->
     <script>
       // Declare and define a variable that represents the Submit Button
-      var button = document.querySelector("#submit-button");
+      var newButton = document.createElement("button");
       // When the submit button is clicked, access the text entered by the user in the input field
       // And pass it as an input parameter to the main function as defined in script.js
-      button.addEventListener("click", function () {
-        // Set result to input value
-        var input = document.querySelector("#input-field");
-        // Store the output of main() in a new variable
-        var result = main(input.value);
-
-        // Display result in output element
-        var output = document.querySelector("#output-div");
-        output.innerHTML = result;
-
-        // Reset input value
-        input.value = "";
+      newButton.innerText = "Hello";
+      newButton.addEventListener("click", function () {
+        console.log("hello, world!");
       });
+      body.appendChild(newButton);
     </script>
   </body>
 </html>
